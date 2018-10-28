@@ -30,3 +30,4 @@ The function that will be running all of the scripts, nlp processing, and model 
 We will be using Anaconda and it's version of Python to work on this project.
 Tabs - set to 4 spaces.
 Every member should fork this project and work on it in their own repository. Then, when you want to submit a change, submit a pull request to the main repo (the respository in EvanShui's github account) and two members will review it.
+DOCUMENTATION. Document every function you write.
