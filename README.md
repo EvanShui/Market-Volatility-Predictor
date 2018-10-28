@@ -15,7 +15,7 @@ To determine impact of an event, we have 3 metrics:
 By using these metrics, we aim to pass these to a multivariate linear regression model to determine what the threshold is (minimum value) of the volatity index (VIX) of next trading day.
 
 ### Data Scraping
-We will be using Beautiful Soup 4 to scrape Reddit and Beautiful Soup 4. We also plan on using some kind of Twitter APi to scrape posts on Twitter. We will then be processing all of these scripts on Python 3.7, where we will store them on GCP (Google Cloud Platform). These scripts will be stored in /scraping
+We will be using Beautiful Soup 4 to scrape Reddit and BBC. We also plan on using some kind of Twitter API to scrape posts on Twitter. We will then be processing all of these scripts on Python 3.7, where we will store the results on GCP (Google Cloud Platform). These scripts will be stored in /scraping
 
 ### NLP Processing
 We will be using NLTK on BBC articles to determine the context of the articles and Twitter posts for emotional semantic analysis. The scripts that process the data will be stored in /nlp
