@@ -5,12 +5,12 @@ We want to determine whether there is a correlation between the impact an event 
 
 ## Project Overview
 To determine impact of an event, we have 3 metrics: 
-*popularity of an event, scraped from Reddit
-- Popularity is determined by number of net votes by a post and number of shares.
-*general public emotion, scraped from Twitter
-- Emotion is determined by using emotional semantic analysis on Twitter posts relating to the given event.
-*context of an event, scraped from BBC.
-- Context of an event inculdes keywords of the event, title of the event, and what sector that event belongs in (Finance, Government, Sports, Etc.)
+* popularity of an event, scraped from Reddit
+  * Popularity is determined by number of net votes by a post and number of shares.
+* general public emotion, scraped from Twitter
+  * Emotion is determined by using emotional semantic analysis on Twitter posts relating to the given event.
+* context of an event, scraped from BBC.
+  * Context of an event inculdes keywords of the event, title of the event, and what sector that event belongs in (Finance, Government, Sports, Etc.)
 
 By using these metrics, we aim to pass these to a multivariate linear regression model to determine what the threshold is (minimum value) of the volatity index (VIX) of next trading day.
 
