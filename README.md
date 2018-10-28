@@ -31,3 +31,17 @@ We will be using Anaconda and it's version of Python to work on this project.
 Tabs - set to 4 spaces.
 Every member should fork this project and work on it in their own repository. Then, when you want to submit a change, submit a pull request to the main repo (the respository in EvanShui's github account) and two members will review it.
 DOCUMENTATION. Document every function you write.
+
+## File Structure
+
+### Data
+Holds all of the JSON data that we will be working with for this project. All JSON files should be written into this folder. There should never be JSON files stored in any of the other folders.
+
+### Scraper
+Holds all of the scripts that scrape the web. The 'main.py' file in this folder is scraper.py
+
+### NLP
+Holds all of the scripts that will analyze the raw data from the scraping scripts. The 'main.py' file in this folder is analyze.py
+
+### Model
+Holds the script that creates the multi-variate linear regression model. The 'main.py' file in this folder is build_model.py
