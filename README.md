@@ -38,7 +38,7 @@ DOCUMENTATION. Document every function you write.
 Holds all of the JSON data that we will be working with for this project. All JSON files should be written into this folder. There should never be JSON files stored in any of the other folders.
 
 ### Scraper
-Holds all of the scripts that scrape the web. The 'main.py' file in this folder is scraper.py. https://newsapi.org/register
+Holds all of the scripts that scrape the web. The 'main.py' file in this folder is scraper.py.
 
 ### NLP
 Holds all of the scripts that will analyze the raw data from the scraping scripts. The 'main.py' file in this folder is analyze.py
