@@ -45,3 +45,9 @@ Holds all of the scripts that will analyze the raw data from the scraping script
 
 ### Model
 Holds the script that creates the multi-variate linear regression model. The 'main.py' file in this folder is build_model.py
+
+
+### Good articles - Stanchev
+Latent Dirichlet Allocation - classify articles into groups. 
+Word2Vec - Convert words into vectors.
+Sentiment Analysis - Get this working at least before we go forward into it.
