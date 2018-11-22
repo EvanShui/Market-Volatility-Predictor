@@ -1,67 +1,72 @@
-
-from sklearn.datasets import fetch_20newsgroups
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
-
-from sklearn.naive_bayes import MultinomialNB
+import sklearn
+import numpy as np
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import SGDClassifier
+from sklearn import metrics
 
-from sklearn.pipeline import Pipeline
+# Customized dataset for training
 
-#comp.os.ms-windows.misc
-#comp.sys.ibm.pc.hardware
-#comp.sys.mac.hardware
-#comp.windows.x
+# 1. Set categories
+categories = ['business', 'entertainment', 'politics', 'sport', 'tech']
 
-# Categories
-categories = ['rec.autos', 'rec.motorcycles', 'rec.sport.baseball', 'rec.sport.hockey', 'sci.crypt',
-              'sci.electronics', 'sci.space', 'misc.forsale', 'talk.politics.misc',
-              'talk.politics.guns', 'talk.politics.mideast', 'talk.religion.misc','alt.atheism', 'soc.religion.christian', 'comp.graphics', 'sci.med']
+# 2. Load dataset
+docs_to_train = sklearn.datasets.load_files("./bbc", description=None, categories=categories,
+                                            load_content=True, encoding='utf-8',
+                                            decode_error="replace",
+                                            shuffle=True, random_state=42)
 
 
-# Load files matching categories
-# twenty_train is a "bunch" (holder object)
-# fields that may be accessed as python dict keys object attributes
-# files are in data attribute: twenty_train.data
-twenty_train = fetch_20newsgroups(subset='train', categories=categories, shuffle=True, random_state=42)
+# Calculate count of each category
+labels, counts = np.unique(docs_to_train.target, return_counts=True)
 
-# Bag of words: turning text content into numerical feature vectors
-count_vect = CountVectorizer()
-X_train_counts = count_vect.fit_transform(twenty_train.data)
+# Convert data.target_names to np array for fancy indexing
+labels_str = np.array(docs_to_train.target_names)[labels]
+print(dict(zip(labels_str, counts)))
 
-# Tf-IDF
-# Fit estimator to data, then transform count-matrix (above) to tf-idf representation
-tfidf_transformer = TfidfTransformer()
-X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
+# 3. Split dataset into training (80%) and test set (20%)
+# X_train: test file data to train, y_train: category names for train data
+# X_test: test file data to test, y_test: category names for test data
+X_train, X_test, y_train, y_test = train_test_split(docs_to_train.data,
+                                                    docs_to_train.target,
+                                                    test_size=0.2)
 
-# TRAINING CLASSIFIER
-clf = MultinomialNB().fit(X_train_tfidf, twenty_train.target)
+# 4. Transform training data
+vectorizer = TfidfVectorizer(stop_words='english',
+                             max_features=1000, decode_error="ignore")
+vectorizer.fit(X_train)
 
-# ----------------------------------------------------------------------#
+# 5. Transform test data
+vectorizer = TfidfVectorizer(stop_words='english',
+                             max_features=1000, decode_error="ignore")
+vectorizer.fit(X_test)
 
-# PIPELINE to vectorize -> transform -> classify
-text_clf = Pipeline([('vect', CountVectorizer()),
-                     ('tfidf', TfidfTransformer()),
-                     ('clf', SGDClassifier(loss='hinge', penalty='l2',
-                                           alpha=1e-3, random_state=42,
-                                           max_iter=5, tol=None))
-                     ])
 
-# Train in a single command
-text_clf.fit(twenty_train.data, twenty_train.target)
+# 6. Train Classifier/Model
+text_clf = SGDClassifier(loss='hinge', penalty='l2',
+                    alpha=1e-3, random_state=42,
+                    max_iter=5, tol=None)
 
-# NEW DOCS
-docs_new = ['Lebron James for the win. Dribbling and 3-pointers!', 'President Obama oh my gosh',
-            'Jennifer Aniston is hilarious in Friends. I watch that TV show everyday',
-            'I drive a BMW. The car acceleration is pretty good',
-            'Adobe is pretty cool tool. I use it to do art on my computer all the time']
+text_clf.fit(vectorizer.transform(X_train), y_train)
 
-#X_new_counts = count_vect.transform(docs_new)
-#X_newtfidf = tfidf_transformer.transform(X_new_counts)
-
-# PREDICTION on new docs
-predicted = text_clf.predict(docs_new)
+# 7. Test trained model using test data
+predicted = text_clf.predict(vectorizer.transform(X_test))
 
 # Print the results of the predictions
-for doc, cat in zip(docs_new, predicted):
-    print('%r => %s' % (doc, twenty_train.target_names[cat]))
+for doc, cat in zip(X_test, predicted):
+    print('%r => %s' % (doc, categories[cat]))
+
+# 8. Evaluate Accuracy
+
+# Note the average is pretty close to 1, meaning the model performs pretty well
+print(metrics.classification_report(y_test, predicted,
+    target_names=docs_to_train.target_names))
+
+
+s = ["I love jennifer Aniston. She is hilarious on the tv show Friends. I watch it after school everyday!"]
+s2 = ["I love BMW. It is a great car to drive. My dad gave it to me. Accelerations is good, brakes are good, speed is key."]
+predicted = text_clf.predict(vectorizer.transform(s2))
+
+# Print the results of the predictions
+print('%r => %s' % (s2[0], categories[predicted[0]]))
