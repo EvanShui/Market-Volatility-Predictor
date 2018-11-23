@@ -61,5 +61,5 @@ def bbc(headline):
             'content': article_text}
     return result
 
-headline = "fire at a town"
-print(bbc(headline))
+#headline = "fire at a town"
+#print(bbc(headline))
