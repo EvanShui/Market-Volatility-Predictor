@@ -2,6 +2,8 @@ import json
 import urllib3
 http = urllib3.PoolManager()
 
+import bbc
+
 def reddit(start_time, end_time):
     # specify the url name and parameters
     pushshift_url = (
@@ -16,6 +18,8 @@ def reddit(start_time, end_time):
     # extract just the title from each post in the list of reddit posts
     headlines = [post['title'] for post in reddit_posts]
     print(headlines)
+
+    bbc.bbc(headlines[5])
 
 start_time = '1d'
 end_time = '0d'
