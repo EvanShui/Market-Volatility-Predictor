@@ -1,35 +1,22 @@
+import json
 import urllib3
-from urllib.request import Request, urlopen
 http = urllib3.PoolManager()
-from bs4 import BeautifulSoup
 
-# specify the url
-start_time = 1540623600
-end_time = 1540796400
-redditsearch_url = (
-    f'https://redditsearch.io/?term=&dataviz=false&aggs=false'
-    f'&subreddits=news&searchtype=posts&search=true&start={start_time}'
-    f'&end={end_time}&size=20'
-)
+def reddit(start_time, end_time):
+    # specify the url name and parameters
+    pushshift_url = (
+        f'https://api.pushshift.io/reddit/search/submission/?sort_type=score'
+        f'&subreddit=news&&after={start_time}&&before={end_time}'
+    )
 
-r = Request(redditsearch_url, headers={'User-Agent': 'Mozilla/5.0'})
-w = urlopen(r).read()
-print('yo')
-print(w)
+    # query pushshift API and retrieve the JSON reddit posts in r/news
+    response = http.request('GET', pushshift_url)
+    reddit_posts = json.loads(response.data.decode('utf-8'))['data']
 
-# query redditsearch website and retrieve the html
-response = http.request('GET', redditsearch_url)
-reddit_page = response.data
+    # extract just the title from each post in the list of reddit posts
+    headlines = [post['title'] for post in reddit_posts]
+    print(headlines)
 
-# parse the html using BeautifulSoup
-reddit_page = BeautifulSoup(reddit_page, 'html.parser')
-
-# from the reddit page, extract the div containing the actual news
-# news = reddit_page.find('div', attrs={'id': 'posts'})
-
-# all the titles are enclosed in <div> tags with the class 'title'
-# extract all titles from news
-# headlines = reddit_page.find_all('div', attrs={'class': 'title'})
-
-# for i in range(len(headlines)):
-#     print(headlines[i].text)
+start_time = '1d'
+end_time = '0d'
+reddit(start_time, end_time)
