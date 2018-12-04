@@ -1,0 +1,2 @@
+twitter_consumer = "RjhQaZ8uvc8FnvWsGb1sQMRW4pAsMama6sT4iy5MdXugJd3jVb"
+twitter_consumer_secret = "RjhQaZ8uvc8FnvWsGb1sQMRW4pAsMama6sT4iy5MdXugJd3jVb"
