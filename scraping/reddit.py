@@ -19,6 +19,9 @@ def reddit(start_time, end_time):
     headlines = [post['title'] for post in reddit_posts]
     print(headlines)
 
+    # test call of the bbc function
+    # at the moment this seems to be either returning None or
+    # resulting in a runtime error
     bbc.bbc(headlines[5])
 
 start_time = '1d'
