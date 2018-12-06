@@ -1,4 +1,4 @@
-# scraping tweets from Twitter
+craping tweets from Twitter
 import tweepy
 import re
 import time
