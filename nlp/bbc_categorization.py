@@ -1,14 +1,16 @@
 from sklearn.externals import joblib
+import os
 
 categories = ['business', 'entertainment', 'politics', 'sport', 'tech']
 
-def bbc_categorization(contents):
+def bbc_categorization(contents, id_num):
 
     arr = [contents]
+    print(id_num)
 
     # Load model and vectorizer
-    text_clf = joblib.load('util/bbc_cat_model.sav')
-    vectorizer = joblib.load('util/vectorizer.sav')
+    text_clf = joblib.load('./models/util/bbc_cat_model.sav')
+    vectorizer = joblib.load('./models/util/vectorizer.sav')
 
     predicted = text_clf.predict(vectorizer.transform(arr))
 

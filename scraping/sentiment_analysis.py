@@ -29,9 +29,9 @@ def tokenize_title(test_title):
     lst = []
     line = (re.sub(r'[^\w\s]', '', test_title))
     print("original title: ", test_title)
-    print(nltk.pos_tag(nltk.word_tokenize(line)))
+    # gets rid of stop words, punctuation, and only keeps noun-based words with
+    # part of speech tagging
     for word in nltk.pos_tag(nltk.word_tokenize(line)):
-        print(word)
         if word[0] not in stop_words and word[0] not in punctuation and word[1] in ['JJ', 'NN', 'NNP', 'NNS']:
             lst.append(word[0])
     return(' OR '.join(lst))
