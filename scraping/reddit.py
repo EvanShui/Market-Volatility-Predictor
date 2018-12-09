@@ -4,15 +4,25 @@ import pandas as pd
 from datetime import datetime
 http = urllib3.PoolManager()
 
-import bbc
+def reddit(start_time, end_time, num_entries):
+    """
+    Scrape for Reddit posts with PushShift API
 
-def reddit(start_time, end_time):
+    Input:
+    start_time (int): left date bound for where to start gathering reddit posts
+    end_time (int): right date bound (in days) for where to stop gathering
+    reddit posts
+    num_entries (int): Number of entries to gather 
+
+    Output:
+    list of reddit posts
+    """
     user_agent = ""
     # specify the url name and parameters
     pushshift_url = (
         'https://api.pushshift.io/reddit/search/submission/?subreddit=news&sort_type=score&'
-        'sort=desc&before={start}d&after={end}d&size=500&filter=score,title,author,created_utc,url'
-        ).format(start=start_time, end=end_time)
+        'sort=desc&before={start}d&after={end}d&size={num_entries}&filter=score,title,author,created_utc,url'
+        ).format(start=start_time, end=end_time, num_entries=num_entries)
 
     # query pushshift API and retrieve the JSON reddit posts in r/news
     response = http.request('GET', pushshift_url)
