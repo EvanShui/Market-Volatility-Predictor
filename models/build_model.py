@@ -2,7 +2,7 @@
 import json
 import pandas as pd
 import datetime
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 import pandas_datareader.data as web
 from sklearn.feature_extraction import DictVectorizer
@@ -56,8 +56,11 @@ def build_model():
     f = web.DataReader('SPY', 'yahoo', start, end)
     f = f.reset_index()
     f.Date = f.reset_index().Date.astype('str')
+    f['Diff'] = f.set_index('Date').diff().reset_index().drop(0)['Close'].reset_index().drop('index',
+            axis=1)
+    f = f.dropna()
     # merge stock prices with current dataframe
-    final_df = pd.merge(f.reset_index()[['Date', 'Close']], cut_df, on='Date')
+    final_df = pd.merge(f.reset_index()[['Date', 'Diff']], cut_df, on='Date')
     # calculate the 'true score' of a dataframe by adding up the three score
     # values of the articles and dividing it by the highest score
     true_score_df = pd.DataFrame(final_df.groupby('Date').apply(lambda x: sum(x['score']) / max(x['score']))).reset_index().rename(columns={0:'true_score'})
@@ -66,13 +69,16 @@ def build_model():
     # compressing three entries on same day into one by combining the
     # categorical variable vectors into a single vector and summing the
     # sentiment analysis column
-    summed_df = cut_df.drop(['id', 'score'], axis=1).groupby(['Date', 'true_score', 'Close'])[['category=business','category=entertainment',
+    summed_df = cut_df.drop(['id', 'score'], axis=1).groupby(['Date',
+        'true_score', 'Diff'])[['category=business','category=entertainment',
                                                                          'category=politics', 'category=sport',
                                                                          'category=tech', 'sa']].sum()
     final_df = summed_df.reset_index()
 
     final_df = final_df[['true_score', 'category=business', 'category=entertainment',
-                                                'category=sport', 'category=politics', 'category=tech','sa', 'Close']]
+                                                'category=sport',
+                                                'category=politics',
+                                                'category=tech','sa', 'Diff']]
 
     # building regression model
     X = final_df.iloc[:, :-1].values
@@ -81,5 +87,10 @@ def build_model():
     regressor = LinearRegression()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    print('score: ', regressor.score(X, y))
-    print('intercept: ', regressor.intercept_)
+    # we're predicting on the MINIMUM value threshold of SPY500. If the
+    # predicted value is less than the actual value, we consider that to be
+    # a 'correct' prediction, since the actual value was greater than the
+    # minimum threshold we predicted.
+    print("number of current predictions: ", sum((y_test- y_pred) > 0))
+    print("total number of predictions: ", len(y_test))
+    print("accuracy: ", sum((y_test-y_pred) > 0) / len(y_test))
