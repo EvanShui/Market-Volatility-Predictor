@@ -6,19 +6,27 @@ import json
 from pprint import pprint
 import random
 from newspaper import Article
-
-def load_reddit_json():
-    """
-    """
-    headline = []
-    with open('reddit_data.json') as f:
-        data = json.load(f)
-    for d in data:
-        headline.append(d)
-    return(headline)
+import sys
+sys.path.insert(0, '../../data_301_project/')
+from nlp.bbc_categorization import bbc_categorization
 
 def scrape_article(id_num, headline, url):
+    """
+    Scrapes the article for text and headline
 
+    Input: id_num (int)
+    headline(string) - headline of article
+    url(string) - url of article
+
+    Output: json object
+    {'id': id_num,
+     'title': title of the article
+     'text': text of the article
+     'url': url of the article
+     'category': category the article falls under as specified by
+     bbc_categorization
+    }
+    """
     article = Article(url)
     from time import sleep
     from newspaper.article import ArticleException, ArticleDownloadState
@@ -36,18 +44,13 @@ def scrape_article(id_num, headline, url):
         # Parse article
         article.parse()
     except:
-        return {'id': id_num, 'title': None, 'text':None, 'url':url}
-    print("article title: {} article text: {}".format(article.title,
-        article.text))
+        # If something goes wrong
+        return {'id': id_num, 'title': None, 'text':None, 'url':url,
+                'category': None}
+    try:
+        category = bbc_categorization(article.title + ' ' + article.text,
+                id_num)
+    except:
+        raise AttributeError("issue with bbc")
     return {'id': id_num, 'title': article.title,'text': article.text, 'url':
-            url}
-"""
-if __name__ == '__main__':
-    reddit_json = load_reddit_json()
-    ret_lst = []
-    for reddit_entry in reddit_json:
-        newspaper_json = newspaper(reddit_entry['id'], reddit_entry['title'], reddit_entry['url'])
-        ret_lst.append(newspaper_json) 
-    with open('articles.json', 'w+') as f:
-        json.dump(ret_lst, f)
-"""
+            url, 'category': category}
