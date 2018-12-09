@@ -1,15 +1,13 @@
 # coding: utf-8
 import json
 import pandas as pd
-from datetime import datetime
+import datetime
 from sklearn.cross_validation import train_test_split
 from sklearn.linear_model import LinearRegression
 import pandas_datareader.data as web
-import datetime
 from sklearn.feature_extraction import DictVectorizer
 
 def build_model():
-    # gets data
     with open('./data/reddit_data.json', 'r') as f:
         reddit_df = json.load(f)
     reddit_df = pd.DataFrame(reddit_df)
@@ -27,7 +25,7 @@ def build_model():
     proc_df = pd.merge(proc_df, sa_df, on='id')
     # creates column for human readable date
     proc_df['date_created'] = proc_df.created_utc.apply(lambda x:
-                                             datetime.utcfromtimestamp(x).strftime("%Y-%m-%d"))
+                                             datetime.datetime.utcfromtimestamp(x).strftime("%Y-%m-%d"))
     df = proc_df
 
     date_entries = df.sort_values(by='date_created').groupby('date_created').count()['author']
