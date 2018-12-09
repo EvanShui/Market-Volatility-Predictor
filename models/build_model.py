@@ -7,16 +7,17 @@ from sklearn.linear_model import LinearRegression
 import pandas_datareader.data as web
 from sklearn.feature_extraction import DictVectorizer
 
-def build_model():
-    with open('./data/reddit_data.json', 'r') as f:
+def build_model(files):
+    print(files)
+    with open(files['reddit'], 'r') as f:
         reddit_df = json.load(f)
     reddit_df = pd.DataFrame(reddit_df)
 
-    with open('./data/categories.json', 'r') as f:
+    with open(files['articles'], 'r') as f:
         article_df = pd.DataFrame(json.load(f))
     article_df.sort_values('id')
 
-    with open('./data/sa.json', 'r') as f:
+    with open(files['sa'], 'r') as f:
         sa_df = pd.DataFrame(json.load(f)).rename(columns={'id_num': 'id'})
     sa_df
 

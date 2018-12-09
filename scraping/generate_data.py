@@ -88,9 +88,9 @@ def generate_data(total_days, days_apart, num_entries):
     (look at /data/recent_files.json for exact file names)
     """
 
-    TEST_REDDIT = 0
-    TEST_ARTICLES = 0
-    TEST_SA = 0
+    TEST_REDDIT = 1
+    TEST_ARTICLES = 1
+    TEST_SA = 1
     current_time = datetime.utcnow().strftime("%Y-%m-%d_%H:%M:%S")
     file_json = {}
     if TEST_REDDIT:
@@ -109,8 +109,9 @@ def generate_data(total_days, days_apart, num_entries):
         sa_file = generate_sentiment_analysis_json(reddit_file, current_time)
     file_json['sa'] = sa_file
 
-    with open('./data/recent_files.json', 'w+') as f:
-        json.dump(file_json, f)
-
-if __name__ == '__main__':
-    generate_data()
+    if TEST_REDDIT and TEST_ARTICLES and TEST_SA:
+        with open('./data/default_files.json', 'w+') as f:
+            json.dump(file_json, f)
+    else:
+        with open('./data/recent_files.json', 'w+') as f:
+            json.dump(file_json, f)
