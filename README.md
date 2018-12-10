@@ -7,21 +7,29 @@ We want to determine whether there is a correlation between the impact an event 
 To determine impact of an event, we have 3 metrics: 
 * popularity of an event, scraped from Reddit
   * Popularity is determined by number of net votes by a post and number of shares.
-* general public emotion, scraped from Twitter
-  * Emotion is determined by using emotional semantic analysis on Twitter posts relating to the given event.
+* positivity of a news article
+  * positivity is determined by using semantic analysis on Reddit post headlines.
 * context of an event, scraped from BBC.
-  * Context of an event inculdes keywords of the event, title of the event, and what sector that event belongs in (Finance, Government, Sports, Etc.)
+  * Context of an event inculdes keywords of the event, title of the event, and what sector that event belongs in (Business, Politics, Sports, Etc.)
 
-By using these metrics, we aim to pass these to a multivariate linear regression model to determine what the threshold is (minimum value) of the volatity index (VIX) of next trading day.
+These metrics are passed to a multivariate linear regression model to determine what the difference is of the Standard and Poor’s 500 Index (SPY500) between the current day and the next trading day.
 
 ### Data Scraping
-We will be using Beautiful Soup 4 to scrape Reddit and BBC. We also plan on using some kind of Twitter API to scrape posts on Twitter. We will then be processing all of these scripts on Python 3.7, where we will store the results on GCP (Google Cloud Platform). These scripts will be stored in /scraping
+To scrape data from Reddit, we utilized the Pushshift API to access comments and submission datasets. Another python library, Newspaper, was used to scrape and parse news articles for their content and title.
 
 ### NLP Processing
-We will be using NLTK on BBC articles to determine the context of the articles and Twitter posts for emotional semantic analysis. The scripts that process the data will be stored in /nlp
+NLTK was employed to tokenize strings from Reddit article headlines and TextBlob was used for Sentiment Analysis. A value of 1 reflects positive reaction, 0 for neutral, and -1 if negative. For BBC article text, the sklearn library was used to create a classifier capable of receiving new, unlabeled text data and assign it to the best fitting category. The model was trained on a BBC dataset of 2225 articles each assigned to 5 categories: business, politics, entertainment, sports, and technology.
+
+### Preprocessing Data
+After gathering all data needed from Reddit, BBC articles, and performing semantic analysis on article titles, the information is collectively used to train and test the final linear regression model (80% training, 20% test). Information from different sources were associated by date, and to aggregate multiple entries (for a single date) into one value for testing and training our model we did the following:
+* Reddit popularity score: calculate a true/‘normalized’ score to reduce redundancy, increase integrity, and standardize impact
+* BBC Articles: vectorize values for article categories/topics to work with numerical data
+* Semantic Analysis: sum of semantic analysis values on Reddit article titles 
+* Stock Prices (SPY500):  difference between closing stock prices of the current and next trading day
+
 
 ### Creating a model
-We will be using scikit_learn to create a multivariate linear regression model to predict the next trading day VIX threshold. The scripts that create the model (and the model itself) will be stored in /model
+We used scikit_learn to create a multivariate linear regression model in order to predict what the minimum threshold value is for the next trading day. The model aggregates all data collected (Preprocessing Data), while also reading in stock closing prices for SPY500, to make the prediction.
 
 ### Main Function
 The function that will be running all of the scripts, nlp processing, and model creation will be in the parent directory, it will be main.py. It contains two functions right now, generate_data, which will re-generate all of the data from scratch, and build_model, which will process the data and train / test the LinearRegression model.
