@@ -24,7 +24,7 @@ We will be using NLTK on BBC articles to determine the context of the articles a
 We will be using scikit_learn to create a multivariate linear regression model to predict the next trading day VIX threshold. The scripts that create the model (and the model itself) will be stored in /model
 
 ### Main Function
-The function that will be running all of the scripts, nlp processing, and model creation will be in the parent directory, it will be main.py.
+The function that will be running all of the scripts, nlp processing, and model creation will be in the parent directory, it will be main.py. It contains two functions right now, generate_data, which will re-generate all of the data from scratch, and build_model, which will process the data and train / test the LinearRegression model.
 
 ## Standards
 We will be using Anaconda and it's version of Python to work on this project.
@@ -45,9 +45,3 @@ Holds all of the scripts that will analyze the raw data from the scraping script
 
 ### Model
 Holds the script that creates the multi-variate linear regression model. The 'main.py' file in this folder is build_model.py
-
-
-### Good articles - Stanchev
-Latent Dirichlet Allocation - classify articles into groups. 
-Word2Vec - Convert words into vectors.
-Sentiment Analysis - Get this working at least before we go forward into it.
