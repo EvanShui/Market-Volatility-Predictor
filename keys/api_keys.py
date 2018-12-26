@@ -1,5 +1,0 @@
-twitter_consumer = "RjhQaZ8uvc8FnvWsGb1sQMRW4pAsMama6sT4iy5MdXugJd3jVb"
-twitter_consumer_secret = "RjhQaZ8uvc8FnvWsGb1sQMRW4pAsMama6sT4iy5MdXugJd3jVb"
-reddit_id = "xuNbxxPdTLMC0g"
-reddit_secret = "Rfev353dmScSWoJ9L5kur4VqRDs"
-reddit_user_agent = "python:pythonscraper:v1.0.0 (by /u/mizusauce)"
